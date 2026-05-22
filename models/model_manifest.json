@@ -1,0 +1,31 @@
+{
+    "schema_version": "1",
+    "open_source": true,
+    "model_name": "poker44_ml17_pre6",
+    "model_version": "17.pre6-stage2-hl-cal-mild-sharp",
+    "framework": "python-numpy-logistic-stacked",
+    "license": "MIT",
+    "repo_url": "https://github.com/tomkaba/poker44-miner-ml17_pre6",
+    "repo_commit": "08c5e326a65be78e4b8740dac9bfb880b851699d",
+    "inference_mode": "local",
+    "training_data_statement": "Derived from benchmark-trained hand-level scoring with mild sharp chunk-output calibration.",
+    "data_attestation": "This stage uses benchmark-derived artifacts plus unlabeled online log calibration and does not use validator-private human data.",
+    "private_data_attestation": "This stage does not use validator-private human data.",
+    "implementation_files": [
+        "models/hand_model.npz",
+        "models/chunk_aggregator_model.npz",
+        "models/score_chunk.py",
+        "models/feature_extractor_frozen.py",
+        "neurons/miner.py",
+        "poker44/__init__.py",
+        "poker44/base/miner.py",
+        "poker44/base/neuron.py",
+        "poker44/miner_heuristics.py",
+        "poker44/utils/config.py",
+        "poker44/utils/misc.py",
+        "poker44/utils/model_manifest.py",
+        "poker44/validator/synapse.py"
+    ],
+    "implementation_sha256": "53a701f6b21a377bd72d50766ec7c46f35043194ea5cb915b06258f174341695",
+    "notes": "Gen17 pre-6 runtime classifier with mild sharp calibrated hand-level chunk aggregation."
+}
