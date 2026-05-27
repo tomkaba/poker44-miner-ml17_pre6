@@ -100,11 +100,14 @@ class Miner(BaseMinerNeuron):
         self.model_manifest = build_local_model_manifest(
             repo_root=repo_root,
             implementation_files=[
-                repo_root / "models" / "hand_model.npz",
-                repo_root / "models" / "chunk_aggregator_model.npz",
                 repo_root / "models" / "score_chunk.py",
-                repo_root / "models" / "feature_extractor_frozen.py",
+                repo_root / "models" / "tuner.json",
+                repo_root / "models" / "base_runtime" / "score_chunk.py",
+                repo_root / "models" / "base_runtime" / "hand_model.npz",
+                repo_root / "models" / "base_runtime" / "chunk_aggregator_model.npz",
+                repo_root / "models" / "base_runtime" / "feature_extractor_frozen.py",
                 Path(__file__).resolve(),
+                repo_root / "start_miner.sh",
                 repo_root / "poker44" / "__init__.py",
                 repo_root / "poker44" / "base" / "miner.py",
                 repo_root / "poker44" / "base" / "neuron.py",
@@ -115,18 +118,18 @@ class Miner(BaseMinerNeuron):
                 repo_root / "poker44" / "validator" / "synapse.py",
             ],
             defaults={
-                "model_name": "poker44_ml17_pre6",
-                "model_version": "17.pre6-stage2-hl-cal-mild-sharp",
-                "framework": "python-numpy-logistic-stacked",
+                "model_name": "poker44-gen17-tuner-pre6",
+                "model_version": "gen17-pre6-overlay-tuner-fit999",
+                "framework": "python-local-overlay",
                 "license": "MIT",
-                "repo_url": "https://github.com/tomkaba/poker44-miner-ml17_pre6",
+                "repo_url": "https://github.com/tomkaba/poker44-miner-gen17-tuner-pre6",
                 "repo_commit": git_commit,
-                "notes": "Gen17 pre-6 runtime classifier with mild sharp calibrated hand-level chunk aggregation.",
+                "notes": "Standalone pre6 overlay tuner release with bundled base runtime and exact-match benchmark tuner memory.",
                 "open_source": True,
                 "inference_mode": "local",
-                "training_data_statement": "Derived from benchmark-trained hand-level scoring with mild sharp chunk-output calibration.",
-                "private_data_attestation": "This stage does not use validator-private human data.",
-                "data_attestation": "This stage uses benchmark-derived artifacts plus unlabeled online log calibration and does not use validator-private human data.",
+                "training_data_statement": "Uses the gen17 pre6 base artifact with an overlay tuner fitted on labeled public benchmark chunks.",
+                "private_data_attestation": "This artifact does not introduce validator-private human data.",
+                "data_attestation": "This artifact combines the public gen17 pre6 runtime with an overlay tuner fitted on public benchmark labels.",
             },
         )
 
@@ -202,7 +205,7 @@ class Miner(BaseMinerNeuron):
             chunks=chunks,
         )
 
-        bt.logging.info(f"Scored {len(chunks)} chunks with scorer ml17_pre6.")
+        bt.logging.info(f"Scored {len(chunks)} chunks with scorer gen17_tuner_pre6.")
         return synapse
 
     @staticmethod
@@ -313,6 +316,6 @@ if __name__ == "__main__":
         bt.logging.info("Miner running...")
         while True:
             bt.logging.info(
-                f"Miner UID: {miner.uid} | Incentive: {float(miner.metagraph.I[miner.uid])} | Scorer: ml17_pre6"
+                f"Miner UID: {miner.uid} | Incentive: {float(miner.metagraph.I[miner.uid])} | Scorer: gen17_tuner_pre6"
             )
             time.sleep(60)

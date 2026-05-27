@@ -7,10 +7,12 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-HAND_MODEL_PATH = REPO_ROOT / "models" / "hand_model.npz"
-CHUNK_AGGREGATOR_MODEL_PATH = REPO_ROOT / "models" / "chunk_aggregator_model.npz"
+TUNER_CONFIG_PATH = REPO_ROOT / "models" / "tuner.json"
+BASE_RUNTIME_DIR = REPO_ROOT / "models" / "base_runtime"
+HAND_MODEL_PATH = BASE_RUNTIME_DIR / "hand_model.npz"
+CHUNK_AGGREGATOR_MODEL_PATH = BASE_RUNTIME_DIR / "chunk_aggregator_model.npz"
 RUNTIME_SCORER_PATH = REPO_ROOT / "models" / "score_chunk.py"
-RUNTIME_FEATURE_EXTRACTOR_PATH = REPO_ROOT / "models" / "feature_extractor_frozen.py"
+RUNTIME_FEATURE_EXTRACTOR_PATH = BASE_RUNTIME_DIR / "feature_extractor_frozen.py"
 
 _RUNTIME_MODEL: Optional[Dict[str, Any]] = None
 _RUNTIME_SCORER: Optional[Any] = None
@@ -28,7 +30,7 @@ def _load_runtime_scorer() -> Any:
     if _RUNTIME_SCORER is not None:
         return _RUNTIME_SCORER
 
-    spec = importlib.util.spec_from_file_location("poker44_gen17_pre6_scorer", RUNTIME_SCORER_PATH)
+    spec = importlib.util.spec_from_file_location("poker44_gen17_tuner_pre6_scorer", RUNTIME_SCORER_PATH)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Cannot load runtime scorer from {RUNTIME_SCORER_PATH}")
 
@@ -93,6 +95,10 @@ def get_chunk_scorer_startup_check(scorer: str) -> Dict[str, object]:
         return info
 
     info["details"] = {
+        "tuner_config_path": str(TUNER_CONFIG_PATH),
+        "tuner_config_exists": TUNER_CONFIG_PATH.exists(),
+        "base_runtime_dir": str(BASE_RUNTIME_DIR),
+        "base_runtime_exists": BASE_RUNTIME_DIR.exists(),
         "hand_model_path": str(HAND_MODEL_PATH),
         "hand_model_exists": HAND_MODEL_PATH.exists(),
         "chunk_aggregator_model_path": str(CHUNK_AGGREGATOR_MODEL_PATH),
